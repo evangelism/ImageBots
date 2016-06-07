@@ -8,13 +8,13 @@ namespace SimpleTranslatorTest
 {
     class Program
     {
-        static SimpleTranslate.SimpleTranslate.SimpleTranslator tr;
+        static BingServices.SimpleTranslator tr;
 
         static void Main(string[] args)
         {
             Console.WriteLine("Starting up");
             Console.WriteLine("Creating obj");
-            tr = new SimpleTranslate.SimpleTranslate.SimpleTranslator("ImageBots", "zhUKtlKJ+pbw6u/4p82jKsXMsPcF5EF5+zXfZMS7+wY=");
+            tr = new BingServices.SimpleTranslator("ImageBots", "zhUKtlKJ+pbw6u/4p82jKsXMsPcF5EF5+zXfZMS7+wY=");
             Console.WriteLine("Translating");
             Translate();
             Console.ReadKey();

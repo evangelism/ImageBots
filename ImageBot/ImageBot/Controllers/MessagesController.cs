@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Microsoft.Bot.Connector;
-using Microsoft.Bot.Connector.Utilities;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using Microsoft.Bot.Builder.Dialogs;
 
 namespace ImageBot
 {
@@ -22,9 +23,7 @@ namespace ImageBot
         {
             if (message.Type == "Message")
             {
-                var tr = new BingServices.SimpleTranslator("ImageBots", "zhUKtlKJ+pbw6u/4p82jKsXMsPcF5EF5+zXfZMS7+wY=");
-                var s = await tr.Translate(message.Text, "en", "ru");
-                return message.CreateReplyMessage(s);
+                return await Conversation.SendAsync(message, () => new PictureDialog());
             }
             else
             {
