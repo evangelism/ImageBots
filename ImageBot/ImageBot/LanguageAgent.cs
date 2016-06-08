@@ -41,6 +41,22 @@ namespace ImageBot
                      select z).FirstOrDefault();
         }
 
+        public Attachment GetAttachment()
+        {
+            if (Image != null) {
+                return new Attachment()
+                /*{ ContentType = $"image/{Image.EncodingFormat}", ContentUrl = Image.Url };*/
+                {
+                    Title = Phrase,
+                    TitleLink = Image.Url,
+                    Text = Phrase,
+                    FallbackText = Phrase,
+                    ThumbnailUrl = Image.ThumbnailUrl
+                };
+            }
+            else return null;
+        }
+
         public async Task SendMessage(IDialogContext context, Message message)
         {
             Message repl;
@@ -50,16 +66,7 @@ namespace ImageBot
             if (Image != null)
             {
                 repl.Attachments = new List<Attachment>();
-                repl.Attachments.Add(new Attachment()
-                { ContentType = $"image/{Image.EncodingFormat}", ContentUrl = Image.Url });
-                /* repl.Attachments.Add(new Attachment()
-                {
-                    Title = LS.Phrase,
-                    TitleLink = LS.Image.Url,
-                    Text = LS.Phrase,
-                    FallbackText = LS.Phrase,
-                    ThumbnailUrl = LS.Image.ThumbnailUrl
-                }); */
+                repl.Attachments.Add(GetAttachment());
             }
             await context.PostAsync(repl);
         }

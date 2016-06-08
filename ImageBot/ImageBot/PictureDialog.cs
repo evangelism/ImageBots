@@ -19,16 +19,23 @@ namespace ImageBot
         public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<Message> argument)
         {
             var message = await argument;
-            await context.PostAsync(message.CreateReplyMessage($"I will now look for different pictures of {message.Text}", "en"));
-            var L0 = new LanguageAgent("en", "English");
-            await L0.LoadPhrase(message.Text);
-            await L0.SendMessage(context, message);
-            var L1 = new LanguageAgent("ru", "Russian");
-            await L1.LoadPhrase(message.Text);
-            await L1.SendMessage(context, message);
-            var L2 = new LanguageAgent("es", "Spanish");
-            await L2.LoadPhrase(message.Text);
-            await L2.SendMessage(context, message);
+
+            var Langs = new LanguageAgent[]
+            {
+                new LanguageAgent("en","English"),
+                new LanguageAgent("ru","Russian"),
+                new LanguageAgent("es","Spanish")
+            };
+
+            foreach (var L in Langs) await L.LoadPhrase(message.Text);
+
+            var repl = message.CreateReplyMessage($"Here is how the word {message.Text} looks like in different languages", "en");
+            repl.Attachments = new List<Attachment>();
+            foreach(var L in Langs)
+            {
+                repl.Attachments.Add(L.GetAttachment());
+            }
+            await context.PostAsync(repl);
             context.Wait(MessageReceivedAsync);
         }
     }
