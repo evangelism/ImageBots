@@ -4,6 +4,7 @@ using Microsoft.Bot.Connector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -17,6 +18,8 @@ namespace ImageBot
         public string PhraseEn { get; private set; }
         public string Phrase { get; private set; }
         public ImageDesc Image { get; private set; }
+
+        public bool IsLoaded = false;
 
         public LanguageAgent(string lang, string language)
         {
@@ -39,6 +42,20 @@ namespace ImageBot
                      where z.Width < 400 && z.Width > 200
                      where z.EncodingFormat == "jpeg"
                      select z).FirstOrDefault();
+        }
+
+        public async Task LoadPhraseMicroservice(string s)
+        {
+            PhraseEn = s;
+            var cli = new HttpClient();
+            var ress = await cli.GetStringAsync($"http://botsf.northeurope.cloudapp.azure.com:8983/api/values?locale={Lang}&text={Uri.EscapeUriString(PhraseEn)}");
+            dynamic res = Newtonsoft.Json.JsonConvert.DeserializeObject(ress);
+            Image = new ImageDesc()
+            {
+                Url = res.ImageUrl,
+                ThumbnailUrl = res.ImageUrl
+            };
+            Phrase = res.ResultText;
         }
 
         public Attachment GetAttachment()
