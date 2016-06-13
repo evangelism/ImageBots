@@ -26,7 +26,14 @@ namespace ImageBot
             context.Wait(MessageReceivedAsync);
         }
 
-        public bool UseMicroservice = true;
+        public bool UseMicroservice = false;
+
+        protected string strip(string s)
+        {
+            if (s.Contains(":")) return s.Substring(0, s.IndexOf(':') - 1);
+            if (s.Length > 128) return s.Substring(0, 128);
+            return s;
+        }
 
         public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<Message> argument)
         {
@@ -37,13 +44,14 @@ namespace ImageBot
             if (UseMicroservice)
             {
                 var http = new HttpClient();
-                var rstring = await http.GetStringAsync("http://botsf.northeurope.cloudapp.azure.com:8983/api/values?intext=" + Uri.EscapeDataString(message.Text));
+                // var rstring = await http.GetStringAsync("http://botsf.northeurope.cloudapp.azure.com:8983/api/values?intext=" + Uri.EscapeDataString(message.Text));
+                var rstring = await http.GetStringAsync("http://botmachine.azure-api.net/api/values?intext="+ Uri.EscapeDataString(message.Text));
                 var res = Newtonsoft.Json.JsonConvert.DeserializeObject<MicroResult[]>(rstring);
                 foreach(var x in res)
                 {
                     repl.Attachments.Add(new Attachment()
                     {
-                        Text = $"{x.ResultText} -- {x.Desc}",
+                        Text = $"{x.ResultText} -- {strip(x.Desc)}",
                         Title = x.ResultText,
                         TitleLink = x.ImageUrl,
                         ThumbnailUrl = x.ImageUrl,
