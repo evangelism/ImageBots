@@ -72,7 +72,7 @@ namespace ImageBot
                 new LanguageAgent("zh-CHT","Chinese")
                 };
 
-                foreach (var L in Langs) await L.LoadPhraseMicroservice(message.Text);
+                foreach (var L in Langs) await L.LoadPhrase(message.Text);
 
                 foreach (var L in Langs)
                 {

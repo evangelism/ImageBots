@@ -68,7 +68,7 @@ namespace ImageBot
                     TitleLink = Image.Url,
                     Text = Phrase,
                     FallbackText = Phrase,
-                    ThumbnailUrl = Image.ThumbnailUrl
+                    ThumbnailUrl = Image.Url
                 };
             }
             else return null;
